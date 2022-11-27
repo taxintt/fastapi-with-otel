@@ -45,10 +45,11 @@ test:  ## Run test
 
 .PHONY: pytest
 pytest:  ## Run pytest
-	PYTHONPATH=src poetry run pytest tests -x --ff --cov=src --cov-report html
+	PYTHONPATH=app/src poetry run pytest tests -x --ff
+	# PYTHONPATH=app/src poetry run pytest tests -x --ff --cov=app/src --cov-report html
 
 
 .PHONY: distclean
 distclean:  ## Clean up environment
-	rm -rf build dist src/*.egg-info .tox .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
-	find src tests -name __pycache__ -type d | xargs rm -rf __pycache__
+	rm -rf build dist app/src/*.egg-info .tox .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
+	find app/src tests -name __pycache__ -type d | xargs rm -rf __pycache__
