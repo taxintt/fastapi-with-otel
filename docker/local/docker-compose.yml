@@ -1,0 +1,29 @@
+version: '3.9'
+
+x-logging: &x-logging
+  options: 
+    max-size: 1000k
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./docker/local/containers/app/Dockerfile
+    init: true
+    tty: true
+    command: "python -m debugpy --listen 0.0.0.0:5678 -m uvicorn src.main:app --reload --reload-include '*.py' --host=0.0.0.0 --port=8080"
+    working_dir: ${APP_ROOT}
+    user: ${UID}:${UID}
+    ports:
+      - "5678:5678"
+      - "20030:8080"
+    networks:
+      default:
+    volumes:
+      - ./app:${APP_ROOT}:cached
+    environment:
+      PORT: 8080
+    logging: *x-logging
+    extra_hosts:
+      - "metadata.google.internal:0.0.0.0"
+    
