@@ -1,0 +1,72 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run lint [Python ${{ matrix.python-version }} on ${{ matrix.platform }}]
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        python-version: ['3.9', '3.10']
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: setup cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          key: lint/v1.000/${{ hashFiles('.pre-commit-config.yaml') }}/
+          path: |
+            ~/.local
+            ~/.cache/pre-commit
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: python -m pip install --user pre-commit poetry pre-commit
+
+      - name: Run pre-commit
+        run: poetry run pre-commit run --all-files
+
+  tox-test:
+    name: Run tox-test [Python ${{ matrix.python-version }} on ${{ matrix.platform }}]
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        python-version: ['3.9', '3.10']
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: setup cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          key: tox/v1.000/${{ env.CACHE_KEY_HASH }}/
+          path: |
+            ~/.local
+            .tox
+        env:
+          CACHE_KEY_HASH: ${{ hashFiles('tox.ini', 'setup.py', 'pyproject.toml', 'requirements*') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: python -m pip install --user tox tox-gh-actions poetry
+
+      - name: Run tox
+        run: poetry run tox

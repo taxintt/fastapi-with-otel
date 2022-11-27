@@ -1,0 +1,16 @@
+/build
+/dist
+/htmlcov
+*.egg-info
+
+__pycache__
+*.pyc
+
+/.tox
+/.mypy_cache
+/.pytest_cache
+/.coverage
+/.coverage.*
+/htmlcov
+
+/.venv

@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "otel-with-fastapi"
+version = "0.1.0"
+description = "This is the applition that implements otel with fastapi"
+authors = ["taxintt <burlonent@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+include = [
+  "CHANGES.rst",
+  "docs",
+  "poetry.lock",
+  "tests",
+  "tox.ini",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.71.0"
+requests = "^2.27.1"
+
+[tool.poetry.dev-dependencies]
+tox = "^3.24.5"
+pre-commit = "^2.16.0"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
