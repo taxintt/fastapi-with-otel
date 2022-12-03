@@ -22,4 +22,5 @@ COPY ./docker/local/containers/app/sitecustomize.py /usr/local/lib/python${PYTHO
 COPY --from=libs /workdir/requirements-dev.txt /app-libs /app-libs/
 
 CMD exec gunicorn src.main:app \
-    --bind:0.0.0.0:$PORT
+    --config=python:src/config/gunicorn \
+    --bind=0.0.0.0:$PORT

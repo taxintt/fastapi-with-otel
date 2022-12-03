@@ -1,7 +1,8 @@
 version: '3.9'
 
+# ref: https://docs.docker.com/compose/compose-file/#using-extensions-as-fragments
 x-logging: &x-logging
-  options: 
+  options:
     max-size: 1000k
 
 services:
@@ -26,4 +27,3 @@ services:
     logging: *x-logging
     extra_hosts:
       - "metadata.google.internal:0.0.0.0"
-    

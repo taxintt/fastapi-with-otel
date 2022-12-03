@@ -1,0 +1,27 @@
+ steps:
+ # Build the container image
+ # Push the container image to Container Registry
+ # https://cloud.google.com/build/docs/optimize-builds/kaniko-cache?hl=ja#kaniko-build
+ - name: 'gcr.io/kaniko-project/executor:v1.9.1'
+   args: 
+    - --cache=true
+    - --cache-ttl=12h
+    # ref: https://cloud.google.com/build/docs/configuring-builds/pass-data-between-steps?hl=ja
+    - --context=/workspace 
+    - --dockerfile=docker/deploy/containers/app/Dockerfile
+    - --destination=gcr.io/$PROJECT_ID/sample-v1:$BUILD_ID
+    - --destination=gcr.io/$PROJECT_ID/sample-v1:latest
+    - --build-arg=STAGE=dev
+    - --build-arg=PORT=8080
+    - --build-arg=REVISION=$BUILD_ID
+ # Deploy container image to Cloud Run
+ - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+   entrypoint: gcloud
+   args:
+   - 'run'
+   - 'deploy'
+   - 'sample-v1'
+   - '--image'
+   - 'gcr.io/$PROJECT_ID/sample-v1:$BUILD_ID'
+   - '--region'
+   - 'asia-northeast1'
