@@ -5,7 +5,7 @@ from app.src.main import app
 client = TestClient(app)
 
 
-def test_hoge():
-    response = client.get("/hoge")
+def test_get_sample():
+    response = client.get("/sample")
     assert response.status_code == 200
-    assert response.json() == {"message": "return hoge"}
+    assert response.json() == {"message": "return sample"}
