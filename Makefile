@@ -63,4 +63,3 @@ pytest:  ## Run pytest
 distclean:  ## Clean up environment
 	rm -rf build dist app/src/*.egg-info .tox .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
 	find app/src tests -name __pycache__ -type d | xargs rm -rf __pycache__
-

@@ -1,16 +1,17 @@
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry import trace
+import os
 
+import opentelemetry.instrumentation.fastapi as otel_fastapi
+from opentelemetry import trace
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
     SimpleSpanProcessor,
 )
-from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
-import opentelemetry.instrumentation.fastapi as otel_fastapi
-import os
 
 from .env import STAGE
+
 
 def setup_span_exporter():
     tracer_provider = TracerProvider()
@@ -22,8 +23,13 @@ def setup_span_exporter():
         )
     else:
         tracer_provider.add_span_processor(
-            span_processor=BatchSpanProcessor(span_exporter=CloudTraceSpanExporter(project_id=os.environ.get("GCP_PROJECT"))),
+            span_processor=BatchSpanProcessor(
+                span_exporter=CloudTraceSpanExporter(
+                    project_id=os.environ.get("GCP_PROJECT"),
+                ),
+            ),
         )
+
 
 def setup_fastapi_instrumentor(app):
     instrumentor = otel_fastapi.FastAPIInstrumentor()
@@ -34,12 +40,15 @@ def setup_fastapi_instrumentor(app):
         client_response_hook=_client_response_hook,
     )
 
+
 def _server_request_hook(span, scope):
     span.update_name("name from server hook")
+
 
 def _client_request_hook(receive_span, request):
     receive_span.update_name("name from client hook")
     receive_span.set_attribute("attr-from-request-hook", "set")
+
 
 def _client_response_hook(send_span, response):
     send_span.update_name("name from response hook")
