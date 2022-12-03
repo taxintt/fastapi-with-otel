@@ -14,6 +14,11 @@ help: ## Display the descriptions of make tasks
 build-local: ## build local
 	env COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILD_KIT=1 $(DKR_CMP) --env-file=docker/local/compose.env build --pull
 
+.PHONY: freshup-local
+freshup-local: ## freshup local env
+	poetry env remove --all
+	poetry config virtualenvs.in-project true --local
+	poetry install
 
 .PHONY: local
 local: ## run local env
@@ -22,7 +27,7 @@ local: ## run local env
 # https://cocoatomo.github.io/poetry-ja/cli/#export
 .PHONY: build-requirements
 build-requirements:  ## Export requirements
-	poetry export -f requirements.txt --output requirements.txt
+	poetry export -f requirements.txt --output requirements/requirements.txt
 
 .PHONY: build-requirements-dev
 build-requirements-dev:  ## Export requirements includes dev packages
@@ -43,6 +48,11 @@ test:  ## Run test
 	poetry run tox
 
 
+.PHONY: deploy
+deploy:  ## Run gcloud run deploy command (e.g. make deploy PROJECT=${gcp_project_id})
+	 gcloud builds submit --region=us-central1 --project=$(PROJECT)
+
+
 .PHONY: pytest
 pytest:  ## Run pytest
 	PYTHONPATH=app/src poetry run pytest tests -x --ff
@@ -53,3 +63,4 @@ pytest:  ## Run pytest
 distclean:  ## Clean up environment
 	rm -rf build dist app/src/*.egg-info .tox .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
 	find app/src tests -name __pycache__ -type d | xargs rm -rf __pycache__
+
