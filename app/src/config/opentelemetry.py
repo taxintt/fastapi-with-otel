@@ -9,10 +9,13 @@ from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProces
 from .env import STAGE
 
 
-def setup_span_exporter():
+def initialize_tracer_provider():
     tracer_provider = TracerProvider()
     trace.set_tracer_provider(tracer_provider=tracer_provider)
 
+
+def setup_span_exporter():
+    tracer_provider = trace.get_tracer_provider()
     if STAGE == "local":
         tracer_provider.add_span_processor(
             span_processor=SimpleSpanProcessor(span_exporter=ConsoleSpanExporter()),
@@ -29,12 +32,14 @@ def setup_span_exporter():
 
 
 def setup_fastapi_instrumentor(app):
+    tracer_provider = trace.get_tracer_provider()
     instrumentor = otel_fastapi.FastAPIInstrumentor()
     instrumentor.instrument_app(
         app=app,
         server_request_hook=_server_request_hook,
         client_request_hook=_client_request_hook,
         client_response_hook=_client_response_hook,
+        tracer_provider=tracer_provider,
     )
 
 

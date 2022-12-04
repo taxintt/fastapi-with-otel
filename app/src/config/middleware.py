@@ -6,6 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 trace_id_ctx_var: ContextVar[str] = ContextVar("trace_id", default="")
 
+
 class Middlewares:
     def __init__(self, app: FastAPI) -> None:
         app.add_middleware(TraceidMiddleware)
