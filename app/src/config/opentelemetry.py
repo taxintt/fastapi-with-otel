@@ -4,11 +4,7 @@ import opentelemetry.instrumentation.fastapi as otel_fastapi
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-    SimpleSpanProcessor,
-)
+from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
 
 from .env import STAGE
 
@@ -22,8 +18,9 @@ def setup_span_exporter():
             span_processor=SimpleSpanProcessor(span_exporter=ConsoleSpanExporter()),
         )
     else:
+        # https://cloud.google.com/trace/docs/setup/python-ot?hl=ja#import
         tracer_provider.add_span_processor(
-            span_processor=BatchSpanProcessor(
+            span_processor=SimpleSpanProcessor(
                 span_exporter=CloudTraceSpanExporter(
                     project_id=os.environ.get("GCP_PROJECT"),
                 ),
