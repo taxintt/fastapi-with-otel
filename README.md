@@ -1,12 +1,17 @@
 # what's this?
-This is the implementation that uses otel with FastAPI.
+This is the FastAPI-based application that uses OpenTelmetry.
 
 - poetry
 - pytest (w/ pytest-cov)
 - tox
 - pre-commit
 
-## Test
+## Run local app
 ```bash
-make pytest
+make local
+```
+
+## Deploy to Cloud run
+```bash
+make deploy PROJECT=${gcp_project_id}
 ```
