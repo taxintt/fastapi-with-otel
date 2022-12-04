@@ -2,7 +2,7 @@
 name = "otel-with-fastapi"
 version = "0.1.0"
 description = "This is the applition that implements otel with fastapi"
-authors = ["taxintt <burlonent@gmail.com>"]
+authors = ["taxin <burlonent@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
@@ -18,12 +18,19 @@ include = [
 python = "^3.9"
 fastapi = "^0.71.0"
 requests = "^2.27.1"
+opentelemetry-instrumentation-fastapi = "^0.35b0"
+opentelemetry-sdk = "^1.14.0"
+opentelemetry-exporter-gcp-trace = "^1.3.0"
+uvicorn = "^0.20.0"
+gunicorn = "^20.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+debugpy = "^1.6.3"
 tox = "^3.24.5"
 pre-commit = "^2.16.0"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
+watchfiles = "^0.18.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
